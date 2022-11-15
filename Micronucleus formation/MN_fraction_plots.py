@@ -478,27 +478,36 @@ plt.show()
 
 
 # comparison
+def calc_erorrbar(x, dx, y, dy):
+    """Error for f(x,y)= x/y"""
+    return np.sqrt( (dx/y)**2 + (dy/y)**2 * (x/y)**2 )
+
+def calc_errorbar_fromdf(X,Y):
+    x, y = X.mean_MN.values, Y.mean_MN.values
+    dx, dy = X.sdem_MN.values, Y.sdem_MN.values
+    return calc_erorrbar(x, dx, y, dy)
 
 plt.figure(figsize=(6.5,6))
 plt.grid(color="lightgray", axis="y")
 h1 = plt.errorbar(DF1_16MAR.meandose, DF1_16MAR.mean_MN.values/DF0_16MAR.mean_MN.values,
-             xerr=DF1_16MAR.stddose, yerr=DF1_16MAR.sdem_MN.values/DF0_16MAR.mean_MN.values,
+             xerr=DF1_16MAR.stddose, yerr=calc_errorbar_fromdf(DF1_16MAR,DF0_16MAR),
              color="blue", label="A549, protons, p1", ls="none", capsize=10, marker="s", ms=8)
 h2 = plt.errorbar(DF5_16MAR.meandose, DF5_16MAR.mean_MN.values/DF0_16MAR.mean_MN.values,
-                 xerr=DF5_16MAR.stddose, yerr=DF5_16MAR.sdem_MN.values/DF0_16MAR.mean_MN.values,
+                 xerr=DF5_16MAR.stddose, yerr=calc_errorbar_fromdf(DF5_16MAR,DF0_16MAR),
                  color="magenta", label="A549, protons, p5", ls="none", capsize=10, marker="s", ms=8)
 
 h3 = plt.errorbar(DF1_05MAY.meandose, DF1_05MAY.mean_MN.values/DF0_05MAY.mean_MN.values,
-             xerr=DF1_05MAY.stddose, yerr=DF1_05MAY.sdem_MN.values/DF0_05MAY.mean_MN.values,
+             xerr=DF1_05MAY.stddose, yerr=calc_errorbar_fromdf(DF1_05MAY,DF0_05MAY),
              color="blue", label="MOC2, protons, p1", ls="none", capsize=10, marker="^", ms=8)
 h4 = plt.errorbar(DF5_05MAY.meandose, DF5_05MAY.mean_MN.values/DF0_05MAY.mean_MN.values,
-                 xerr=DF5_05MAY.stddose, yerr=DF5_05MAY.sdem_MN.values/DF0_05MAY.mean_MN.values,
+                 xerr=DF5_05MAY.stddose, yerr=calc_errorbar_fromdf(DF5_05MAY,DF0_05MAY),
                  color="magenta", label="MOC2, protons, p5", ls="none", capsize=10, marker="^", ms=8)
 
 h5 = plt.errorbar(DF_03JUN.dose[1:], DF_03JUN.mean_MN[1:].values/DF_03JUN.mean_MN[0],
-             yerr=DF_03JUN.sdem_MN[1:].values/DF_03JUN.sdem_MN[0],
+             yerr=calc_erorrbar(DF_03JUN.mean_MN[1:].values, DF_03JUN.sdem_MN[1:].values,
+             DF_03JUN.mean_MN[0], DF_03JUN.sdem_MN[0]),
              color="green", ls="none", capsize=15, marker="s", label="A549, x-rays", ms=8)
-plt.ylim(0,6)
+plt.ylim(0,7)
 
 plt.legend(loc="upper left", fontsize=13, markerscale=0.8, handler_map={
     type(h1): HandlerErrorbar(xerr_size=0.65,yerr_size=0.65),
